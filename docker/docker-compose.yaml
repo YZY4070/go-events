@@ -1,0 +1,54 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:16.1
+    container_name: pet-db
+    ports:
+      - "6538:5432"
+    environment:
+      - POSTGRES_DB=pet
+      - POSTGRES_USER=adb
+      - POSTGRES_PASSWORD=password
+#    volumes:
+#      - ./volumes/postgres/pet-data:/var/lib/postgresql/data/
+    healthcheck:
+      test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
+      timeout: 5s
+      interval: 5s
+      retries: 10
+
+  migrator:
+    build:
+      context: ..
+      dockerfile: docker/migrator/Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgres://adb:password@postgres:5432/pet?sslmode=disable
+
+
+
+
+
+
+
+
+
+
+
+
+
+#    context:
+#    image: migrate/migrate:latest
+#    volumes:
+#      - ./migrations:/migrations
+#    command: [
+#      "-path", "/migrations/",
+#      "-database", "postgres://adb:password@postgres:5432/pet?sslmode=disable",
+#      "up"
+#    ]
+#    depends_on:
+#      postgres:
+#        condition: service_healthy

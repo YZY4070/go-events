@@ -1,0 +1,6 @@
+env: "local" # local, development, production
+storage_path : "postgres://adb:password@localhost:6538/pet?sslmode=disable"
+http_server:
+  address: "localhost:8080"
+  timeout: 4s
+  idle_timeout: 60s
