@@ -29,17 +29,6 @@ services:
       - DATABASE_URL=postgres://adb:password@postgres:5432/pet?sslmode=disable
 
 
-
-
-
-
-
-
-
-
-
-
-
 #    context:
 #    image: migrate/migrate:latest
 #    volumes:

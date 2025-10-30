@@ -1,0 +1,557 @@
+openapi: 3.0.3
+info:
+  title: TRYREST API
+  description: Простое API для управления пользователями, событиями и бронированиями — соответствует маршрутам в проекте
+  version: "1.0.0"
+servers:
+  - url: http://localhost:8080
+    description: Local dev server (взят из config/local.yaml)
+
+tags:
+  - name: Users
+    description: Управление пользователями
+  - name: Events
+    description: Управление событиями
+  - name: Bookings
+    description: Бронирования мероприятий
+
+paths:
+  /users:
+    get:
+      tags: [Users]
+      summary: Получить всех пользователей
+      responses:
+        "200":
+          description: Список пользователей
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+              examples:
+                sample:
+                  summary: Пример ответа со списком пользователей
+                  value:
+                    - id: 1
+                      name: Ivan Ivanov
+                      email: ivan@example.com
+        "500":
+          $ref: '#/components/responses/InternalError'
+    post:
+      tags: [Users]
+      summary: Создать пользователя
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+            examples:
+              createUser:
+                summary: Пример создания пользователя
+                value:
+                  name: Ivan Ivanov
+                  email: ivan@example.com
+      responses:
+        "201":
+          description: Пользователь создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              examples:
+                createdUser:
+                  summary: Пример созданного пользователя
+                  value:
+                    id: 1
+                    name: Ivan Ivanov
+                    email: ivan@example.com
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "500":
+          $ref: '#/components/responses/InternalError'
+
+  /users/{id}:
+    parameters:
+      - $ref: '#/components/parameters/IdParam'
+    get:
+      tags: [Users]
+      summary: Получить пользователя по ID
+      responses:
+        "200":
+          description: Пользователь найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              examples:
+                sampleUser:
+                  summary: Пример пользователя
+                  value:
+                    id: 1
+                    name: Ivan Ivanov
+                    email: ivan@example.com
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "404":
+          $ref: '#/components/responses/NotFound'
+        "500":
+          $ref: '#/components/responses/InternalError'
+    put:
+      tags: [Users]
+      summary: Обновить пользователя
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdate'
+            examples:
+              updateUser:
+                summary: Пример обновления пользователя
+                value:
+                  name: Ivan Petrov
+                  email: petrov@example.com
+      responses:
+        "200":
+          description: Обновлённый пользователь
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              examples:
+                updatedUser:
+                  summary: Пример обновлённого пользователя
+                  value:
+                    id: 1
+                    name: Ivan Petrov
+                    email: petrov@example.com
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "404":
+          $ref: '#/components/responses/NotFound'
+        "500":
+          $ref: '#/components/responses/InternalError'
+    delete:
+      tags: [Users]
+      summary: Удалить пользователя
+      responses:
+        "204":
+          description: Успешно — без тела
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "404":
+          $ref: '#/components/responses/NotFound'
+        "500":
+          $ref: '#/components/responses/InternalError'
+
+  /events:
+    get:
+      tags: [Events]
+      summary: Получить все события
+      responses:
+        "200":
+          description: Список событий
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+              examples:
+                sample:
+                  summary: Пример ответа со списком событий
+                  value:
+                    - id: 10
+                      title: Concert A
+                      description: Rock concert
+        "500":
+          $ref: '#/components/responses/InternalError'
+    post:
+      tags: [Events]
+      summary: Создать событие
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventCreate'
+            examples:
+              createEvent:
+                summary: Пример создания события
+                value:
+                  title: Concert A
+                  description: Rock concert
+      responses:
+        "201":
+          description: Событие создано
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+              examples:
+                createdEvent:
+                  summary: Пример созданного события
+                  value:
+                    id: 10
+                    title: Concert A
+                    description: Rock concert
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "500":
+          $ref: '#/components/responses/InternalError'
+
+  /events/{id}:
+    parameters:
+      - $ref: '#/components/parameters/IdParam'
+    get:
+      tags: [Events]
+      summary: Получить событие по ID
+      responses:
+        "200":
+          description: Событие найдено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+              examples:
+                sampleEvent:
+                  summary: Пример события
+                  value:
+                    id: 10
+                    title: Concert A
+                    description: Rock concert
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "404":
+          $ref: '#/components/responses/NotFound'
+        "500":
+          $ref: '#/components/responses/InternalError'
+    put:
+      tags: [Events]
+      summary: Обновить событие
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventUpdate'
+            examples:
+              updateEvent:
+                summary: Пример обновления события
+                value:
+                  title: Concert B
+                  description: Pop concert
+      responses:
+        "200":
+          description: Обновлённое событие
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+              examples:
+                updatedEvent:
+                  summary: Пример обновлённого события
+                  value:
+                    id: 10
+                    title: Concert B
+                    description: Pop concert
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "404":
+          $ref: '#/components/responses/NotFound'
+        "500":
+          $ref: '#/components/responses/InternalError'
+    delete:
+      tags: [Events]
+      summary: Удалить событие
+      responses:
+        "204":
+          description: Успешно — без тела
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "404":
+          $ref: '#/components/responses/NotFound'
+        "500":
+          $ref: '#/components/responses/InternalError'
+
+  /bookings:
+    get:
+      tags: [Bookings]
+      summary: Получить все бронирования
+      responses:
+        "200":
+          description: Список бронирований
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+              examples:
+                sample:
+                  summary: Пример ответа со списком бронирований
+                  value:
+                    - id: 100
+                      event_id: 10
+                      user_id: 1
+        "500":
+          $ref: '#/components/responses/InternalError'
+    post:
+      tags: [Bookings]
+      summary: Создать бронирование
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingCreate'
+            examples:
+              createBooking:
+                summary: Пример создания бронирования
+                value:
+                  event_id: 10
+                  user_id: 1
+      responses:
+        "201":
+          description: Бронирование создано
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+              examples:
+                createdBooking:
+                  summary: Пример созданного бронирования
+                  value:
+                    id: 100
+                    event_id: 10
+                    user_id: 1
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "500":
+          $ref: '#/components/responses/InternalError'
+
+  /bookings/{id}:
+    parameters:
+      - $ref: '#/components/parameters/IdParam'
+    get:
+      tags: [Bookings]
+      summary: Получить бронирование по ID
+      responses:
+        "200":
+          description: Бронирование найдено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+              examples:
+                sampleBooking:
+                  summary: Пример бронирования
+                  value:
+                    id: 100
+                    event_id: 10
+                    user_id: 1
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "404":
+          $ref: '#/components/responses/NotFound'
+        "500":
+          $ref: '#/components/responses/InternalError'
+    put:
+      tags: [Bookings]
+      summary: Обновить бронирование
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingUpdate'
+            examples:
+              updateBooking:
+                summary: Пример обновления бронирования
+                value:
+                  event_id: 11
+                  user_id: 2
+      responses:
+        "200":
+          description: Обновлённое бронирование
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+              examples:
+                updatedBooking:
+                  summary: Пример обновлённого бронирования
+                  value:
+                    id: 100
+                    event_id: 11
+                    user_id: 2
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "404":
+          $ref: '#/components/responses/NotFound'
+        "500":
+          $ref: '#/components/responses/InternalError'
+    delete:
+      tags: [Bookings]
+      summary: Удалить бронирование
+      responses:
+        "204":
+          description: Успешно — без тела
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "404":
+          $ref: '#/components/responses/NotFound'
+        "500":
+          $ref: '#/components/responses/InternalError'
+
+components:
+  parameters:
+    IdParam:
+      name: id
+      in: path
+      description: Идентификатор ресурса
+      required: true
+      schema:
+        type: integer
+        format: int64
+  schemas:
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Resource not found"
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: Ivan Ivanov
+        email:
+          type: string
+          format: email
+          example: ivan@example.com
+      required: [id, name, email]
+
+    UserCreate:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Ivan Ivanov
+        email:
+          type: string
+          format: email
+          example: ivan@example.com
+      required: [name, email]
+
+    UserUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+      required: [name, email]
+
+    Event:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        title:
+          type: string
+          example: Concert A
+        description:
+          type: string
+          example: Rock concert
+      required: [id, title]
+
+    EventCreate:
+      type: object
+      properties:
+        title:
+          type: string
+          example: Concert A
+        description:
+          type: string
+          example: Rock concert
+      required: [title]
+
+    EventUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+      required: [title]
+
+    Booking:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 100
+        event_id:
+          type: integer
+          format: int64
+          example: 10
+        user_id:
+          type: integer
+          format: int64
+          example: 1
+      required: [id, event_id, user_id]
+
+    BookingCreate:
+      type: object
+      properties:
+        event_id:
+          type: integer
+          format: int64
+        user_id:
+          type: integer
+          format: int64
+      required: [event_id, user_id]
+
+    BookingUpdate:
+      type: object
+      properties:
+        event_id:
+          type: integer
+          format: int64
+        user_id:
+          type: integer
+          format: int64
+      required: [event_id, user_id]
+
+  responses:
+    BadRequest:
+      description: Неправильный запрос (например, невалидный id или тело)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Ресурс не найден
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    InternalError:
+      description: Внутренняя ошибка сервера
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
